@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Klasifikasi Topik Hukum</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/png" href="../static/images/logo.png" />
+        <!-- Custom Google font-->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="../static/css/styles.css" rel="stylesheet" />
+    </head>
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
+                <div class="container px-5">
+                    <a class="navbar-brand" href="/"><span class="fw-bolder text-primary">Klasifikasi Topik Hukum</span></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
+                            <li class="nav-item"><a class="nav-link" href="/">Beranda</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/#predict">Klasifikasi</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/evaluate">Evaluasi</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- Page Content-->
+            <div class="container px-5">
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">Evaluasi</span></h1>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-11 col-xl-9 col-xxl-8">
+                        <!-- Experience Section-->
+                        <section>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h2 class="text-secondary fw-bolder mb-4">Uji Model</h2>
+                            </div>
+                            <!-- Experience Card 1-->
+                            <div class="card shadow border-0 rounded-4 mb-5">
+                                <div class="card-body p-5">
+                                    <div class="row align-items-center gx-5">
+                                        <form id="upload-form" >
+                                            <select name="model" id="model" class="form-select mb-3" aria-label="Default select example">
+                                                <option selected>Pilih Model</option>
+                                                <option value="model1">IndoBERT | Batch Size 16 | Learning rate 3e-5</option>
+                                                <option value="model2">IndoBERT | Batch Size 32 | Learning rate 3e-5 🥇</option>
+                                                <option value="model3">IndoBERT | Batch Size 16 | Learning rate 3e-3</option>
+                                                <option value="model4">IndoBERT | Batch Size 32 | Learning rate 3e-3</option>
+                                                <option value="model5">Bi-LSTM | Batch Size 16 | Learning rate 3e-5</option>
+                                                <option value="model6">Bi-LSTM | Batch Size 32 | Learning rate 3e-5</option>
+                                                <option value="model7">Bi-LSTM | Batch Size 16 | Learning rate 3e-3 🥇</option>
+                                                <option value="model8">Bi-LSTM | Batch Size 32 | Learning rate 3e-3</option>
+                                            </select>
+                                            <div class="mb-3">
+                                                <label for="formFile" class="form-label">Unggah file CSV: *dengan format kolom 'label' dan 'question'</label>
+                                                <input class="form-control" type="file" id="file">
+                                            </div>
+                                            <!-- Submit Button-->
+                                            <div class="d-grid"><button class="btn btn-primary btn-lg bg-secondary" id="submitButton" type="submit">Evaluasi</button></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Experience Card 2-->
+                             <div id="result" class="hidden">
+                                <div  class="card shadow border-0 rounded-4 mb-5"><!--hidden -->
+                                    <div class="card-body p-5">
+                                        <div class="row align-items-center gx-5">
+
+                                            <div class="col text-lg-start mb-4 mb-lg-0">
+                                                <!-- <div class="bg-light p-4 rounded-4"> -->
+                                                    <div class="text-secondary fw-bolder mb-2" id="accuracy-percentage">0%</div>
+                                                    <div class="progress mb-2" role="progressbar" id="accuracy-progress" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                                                        <div class="progress-bar bg-secondary" style="width: 0%;"></div>
+                                                    </div>
+                                                    <div class="text-gradient fw-bolder mb-4">Accuracy</div>
+
+                                                    <div class="text-secondary fw-bolder mb-2" id="recall-percentage">0%</div>
+                                                    <div class="progress mb-2" role="progressbar" id="recall-progress" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                                                        <div class="progress-bar bg-secondary" style="width: 0%;"></div>
+                                                    </div>
+                                                    <div class="text-gradient fw-bolder">Recall</div>
+                                                <!-- </div> -->
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <!-- <div class="bg-light p-4 rounded-4"> -->
+                                                    <div class="text-secondary fw-bolder mb-2" id="f1-percentage">0%</div>
+                                                    <div class="progress mb-2" role="progressbar" id="f1-progress" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                                                        <div class="progress-bar bg-secondary" style="width: 0%;"></div>
+                                                    </div>
+                                                    <div class="text-gradient fw-bolder mb-4">F1 - Measure</div>
+
+                                                    <div class="text-secondary fw-bolder mb-2" id="precision-percentage">0%</div>
+                                                    <div class="progress mb-2" role="progressbar" id="precision-progress" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                                                        <div class="progress-bar bg-secondary" style="width: 0%;"></div>
+                                                    </div>
+                                                    <div class="text-gradient fw-bolder">Precision</div>
+                                                <!-- </div> -->
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <h2 class="text-secondary fw-bolder mb-4">Metrik Topik Hukum</h2>
+                                </div>
+                                <!-- Experience Card 3-->
+                                <div class="card shadow border-0 rounded-4 mb-5">
+                                    <div class="card-body p-5">
+                                        <div id="question-metrics" class="row row-cols-md-3 align-items-center gx-2">
+                                            <!-- Dari js script -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Experience Card 4-->
+                                <div class="card shadow border-0 rounded-4 mb-5">
+                                    <div class="card-body p-5">
+                                        <div id="prediction-results" class="row row-cols-md-3 align-items-center gx-2">
+                                            <!-- dari js script -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!-- Call to action section-->
+            <section class="py-5 bg-gradient-primary-to-secondary text-white">
+                <div class="container px-5 my-5">
+                    <div class="text-center">
+                        <h2 class="display-4 fw-bolder mb-4">Analisis Topik Hukum Otomatis, Lebih Mudah</h2>
+                        <a class="btn btn-outline-light btn-lg px-5 py-3 fs-6 fw-bolder" href="contact.html">Contact me</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Footer-->
+        <footer class="bg-white py-4 mt-auto">
+            <div class="container px-5">
+                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                    <div class="col-auto"><div class="small m-0">Copyright &copy; Your Website 2025</div></div>
+                    <div class="col-auto">
+                        <a class="small" href="#!">Privacy</a>
+                        <span class="mx-1">&middot;</span>
+                        <a class="small" href="#!">Terms</a>
+                        <span class="mx-1">&middot;</span>
+                        <a class="small" href="#!">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+
+        <!-- Sweet Alert untuk notifikasi -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- FilePond CSS & JS -->
+        <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+        <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+        // Konfigurasi FilePond dengan validasi tipe file CSV
+        const pond = FilePond.create(document.querySelector('input[type="file"]'), {
+            // Validasi tipe file
+            acceptedFileTypes: ['text/csv', 'application/vnd.ms-excel', 'text/plain'],
+            fileValidateTypeDetectType: (source, type) => new Promise((resolve, reject) => {
+            // Pengecekan tambahan berdasarkan ekstensi file
+            if (source.name.toLowerCase().endsWith('.csv')) {
+                resolve(type);
+            } else {
+                reject();
+            }
+            }),
+            
+            // Konfigurasi pesan kesalahan kustom
+            labelFileTypeNotAllowed: 'File yang diizinkan hanya file CSV',
+            fileValidateTypeLabelExpectedTypes: 'Harap unggah file dengan format .csv',
+            
+            // Tambahan: Menampilkan pesan kesalahan
+            onaddfile: (error, file) => {
+            if (error) {
+                // Menampilkan pesan kesalahan jika file tidak valid
+                pond.removeFile(file);
+                Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan Unggah File',
+                text: 'Harap unggah file dengan format .csv',
+                confirmButtonText: 'Tutup'
+                });
+            }
+            }
+        });
+
+        // Konfigurasi submit form (sebagian besar sama dengan sebelumnya)
+        $(document).ready(function () {
+            $('#upload-form').on('submit', function (event) {
+            event.preventDefault();
+
+            // Cek apakah file CSV sudah dipilih
+            const files = pond.getFiles();
+            if (files.length === 0) {
+                Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan',
+                text: 'Silakan pilih file CSV terlebih dahulu',
+                confirmButtonText: 'Tutup'
+                });
+                return;
+            }
+
+            // Proses submit form seperti sebelumnya
+            $('#result').addClass('hidden');
+            toggleLoader(true);
+
+            const formData = new FormData();
+            formData.append('model', $('#model').val());
+            formData.append('file', files[0].file);
+
+            // Melakukan pengiriman data dengan AJAX
+            $.ajax({
+                url: '/evaluate',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                console.log('Metrics:', response); // Menampilkan respons di console
+
+                // Menampilkan progress accuracy
+                const accuracy = response.accuracy * 100;
+                document.getElementById('accuracy-progress').children[0].style.width = `${accuracy}%`;
+                document.getElementById('accuracy-percentage').textContent = `${accuracy.toFixed(2)}%`;
+
+                // Menampilkan progress f1_score
+                const f1 = response.macro_avg.f1_score * 100;
+                document.getElementById('f1-progress').children[0].style.width = `${f1}%`;
+                document.getElementById('f1-percentage').textContent = `${f1.toFixed(2)}%`;
+
+                // Menampilkan progress recall
+                const recall = response.macro_avg.recall * 100;
+                document.getElementById('recall-progress').children[0].style.width = `${recall}%`;
+                document.getElementById('recall-percentage').textContent = `${recall.toFixed(2)}%`;
+
+                // Menampilkan progress precision
+                const precision = response.macro_avg.precision * 100;
+                document.getElementById('precision-progress').children[0].style.width = `${precision}%`;
+                document.getElementById('precision-percentage').textContent = `${precision.toFixed(2)}%`;
+
+                // Menampilkan metrik Question
+                const questionMetricsContainer = document.getElementById('question-metrics');
+                questionMetricsContainer.innerHTML = ''; // Kosongkan kontainer sebelum menambah data baru
+                Object.keys(response.class_metrics).forEach(question => {
+                    const metrics = response.class_metrics[question];
+                    const questionItem = document.createElement('div');
+                    questionItem.classList.add('col', 'text-lg-start', 'mb-4', 'mb-lg-2');
+
+                    questionItem.innerHTML = `
+                        <div class="bg-light p-4 rounded-4">
+                            <div class="text-gradient fw-bolder mb-2">${question.charAt(0).toUpperCase() + question.slice(1)}</div>
+                            <div class="text-secondary small fw-bolder mb-1" id="${question}-f1-percentage">${(metrics.f1_score * 100).toFixed(2)}%</div>
+                            <div class="progress mb-2" role="progressbar" aria-label="Example 10px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 10px">
+                                <div class="progress-bar bg-secondary" style="width: ${(metrics.f1_score * 100)}%"></div>
+                            </div>
+                            <div class="text-gradient small fw-bolder mb-2">F1 Score</div>
+                            <div class="text-secondary small fw-bolder mb-1" id="${question}-recall-percentage">${(metrics.recall * 100).toFixed(2)}%</div>
+                            <div class="progress mb-2" role="progressbar" aria-label="Example 10px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 10px">
+                                <div class="progress-bar bg-secondary" style="width: ${(metrics.recall * 100)}%"></div>
+                            </div>
+                            <div class="text-gradient small fw-bolder mb-2">Recall</div>
+                            <div class="text-secondary small fw-bolder mb-1" id="${question}-precision-percentage">${(metrics.precision * 100).toFixed(2)}%</div>
+                            <div class="progress mb-2" role="progressbar" aria-label="Example 10px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 10px">
+                                <div class="progress-bar bg-secondary" style="width: ${(metrics.precision * 100)}%"></div>
+                            </div>
+                            <div class="text-gradient small fw-bolder">Precision</div>
+                        </div>
+                    `;
+                    questionMetricsContainer.appendChild(questionItem);
+                });
+
+                // Menampilkan prediksi
+                const predictionResultsContainer = document.getElementById('prediction-results');
+                predictionResultsContainer.innerHTML = ''; // Kosongkan kontainer sebelum menambah data baru
+
+                response.predictions.forEach(prediction => {
+                    const predictionItem = document.createElement('div');
+                    predictionItem.classList.add('col', 'text-lg-start', 'mb-4', 'mb-lg-2');
+
+                    predictionItem.innerHTML = `
+                    <div class="bg-light p-4 rounded-4 fixed-box">
+                        <div class="text-truncate-multi">${prediction.question}</div>
+                        <div class="badge-box">
+                            <span class="badge ${prediction.label === prediction.predicted_label ? 'text-bg-primary' : 'text-bg-secondary'}">${prediction.label}</span>
+                            <span class="badge ${prediction.label === prediction.predicted_label ? 'text-bg-primary' : 'text-bg-secondary'}">${prediction.predicted_label}</span>
+                        </div>
+                    </div>
+                    `;
+                    predictionResultsContainer.appendChild(predictionItem);
+                });
+
+                // Menampilkan hasil setelah loading selesai
+                $('#result').removeClass('hidden');
+
+                // Menyembunyikan loader
+                toggleLoader(false);
+                },
+                error: function (xhr) {
+                // Tangani error dengan Sweet Alert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Mengunggah',
+                    text: 'Harap unggah file dengan format .csv',
+                    confirmButtonText: 'Tutup'
+                });
+                toggleLoader(false);
+                }
+            });
+            });
+
+            function toggleLoader(show) {
+            const $submitButton = $("#submitButton");
+            if (show) {
+                $submitButton.prop('disabled', true).html('<span class="loader" id="loaderAnimation"></span>');
+            } else {
+                $("#loaderAnimation").remove();
+                $submitButton.prop('disabled', false).text("Evaluasi Ulang");
+            }
+            }
+        });
+        </script>
+    </body>
+</html>
