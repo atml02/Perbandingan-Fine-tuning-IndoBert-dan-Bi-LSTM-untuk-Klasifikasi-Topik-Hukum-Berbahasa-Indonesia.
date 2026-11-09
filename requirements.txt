@@ -1,0 +1,7 @@
+Flask
+torch
+transformers
+pandas
+numpy
+scikit-learn
+transformers==4.16.2
